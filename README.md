@@ -74,14 +74,32 @@ cp /mnt/etc/nixos/hardware-configuration.nix hosts/default/hardware-configuratio
 - Edit `home/default/home.nix` — set your git name/email, username
 - Edit `home/default/hyprland.conf` — adjust monitor, keybindings
 
-### 5. Install
+### 5. Install using the installer script
+
+The included `install.sh` copies all configuration files to their target paths.
 
 ```bash
-# Clone this repo into /mnt/etc/nixos
+# Clone this repo somewhere temporary
+git clone <your-repo-url> /tmp/nixos-configuration
+cd /tmp/nixos-configuration
+
+# Fresh install (files are placed under /mnt/etc/nixos)
+sudo ./install.sh /mnt
+
+# Then run the NixOS installer
+nixos-install --flake /mnt/etc/nixos#default
+```
+
+<details>
+<summary>Manual install (without the script)</summary>
+
+```bash
 git clone <your-repo-url> /mnt/etc/nixos
 cd /mnt/etc/nixos
 nixos-install --flake .#default
 ```
+
+</details>
 
 ### 6. Reboot and enjoy
 
@@ -94,6 +112,14 @@ reboot
 ### Rebuild after changes
 
 ```bash
+sudo nixos-rebuild switch --flake /etc/nixos#default
+```
+
+### Re-run the installer on a running system
+
+```bash
+cd /path/to/nixos-configuration
+sudo ./install.sh          # installs to /etc/nixos and backs up the previous config
 sudo nixos-rebuild switch --flake /etc/nixos#default
 ```
 
