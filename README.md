@@ -152,7 +152,7 @@ sudo nixos-rebuild switch --flake .#default
 | `Super + Y` | Pseudo-tile |
 | `Super + B` | Open Firefox |
 | `Super + E` | File manager (Nautilus) |
-| `Super + L` | Lock screen (hyprlock) |
+| `Super + Shift + L` | Lock screen (hyprlock) |
 | `Super + C` | Clipboard history picker |
 | `Super + P` | Colour picker (hyprpicker) |
 | `Super + S` | Toggle scratchpad workspace |
