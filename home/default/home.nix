@@ -7,8 +7,10 @@
 
   # ---------- Hyprland user config ----------
   xdg.configFile."hypr/hyprland.conf".source = ./hyprland.conf;
+  xdg.configFile."hypr/hyprlock.conf".source  = ./hyprlock.conf;
+  xdg.configFile."hypr/hypridle.conf".source  = ./hypridle.conf;
   xdg.configFile."waybar/config.jsonc".source = ./waybar/config.jsonc;
-  xdg.configFile."waybar/style.css".source = ./waybar/style.css;
+  xdg.configFile."waybar/style.css".source    = ./waybar/style.css;
 
   # ---------- Shell ----------
   programs.zsh = {
@@ -60,6 +62,8 @@
     vlc
     gimp
     libreoffice
+    # Idle daemon (runs as exec-once in hyprland.conf)
+    hypridle
   ];
 
   home.stateVersion = "24.11";

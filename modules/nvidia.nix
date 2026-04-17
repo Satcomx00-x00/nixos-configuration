@@ -8,6 +8,9 @@
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
+    # nvidia-vaapi-driver enables hardware-accelerated video decode/encode on
+    # NVIDIA under Wayland (used by Firefox, MPV, etc.)
+    extraPackages = with pkgs; [ nvidia-vaapi-driver ];
   };
 
   hardware.nvidia = {
@@ -38,8 +41,13 @@
     GBM_BACKEND = "nvidia-drm";
     LIBVA_DRIVER_NAME = "nvidia";
 
+    # Use the direct VA-API backend (more stable than the NVDEC backend)
+    NVD_BACKEND = "direct";
+
     # Enable Wayland in Mozilla / Electron apps
     MOZ_ENABLE_WAYLAND = "1";
     NIXOS_OZONE_WL = "1";
+    # Hint Electron apps to use the native Wayland backend when available
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
   };
 }
