@@ -97,7 +97,7 @@ if [[ -n "${TARGET_ROOT}" && -f "${GENERATED_HW}" ]]; then
     # nixos-generate-config may have placed hardware-configuration.nix at the
     # top level; copy it into our host directory so the flake can find it.
     HW_DEST="${NIXOS_DIR}/hosts/default/hardware-configuration.nix"
-    if ! diff -q "${GENERATED_HW}" "${HW_DEST}" &>/dev/null 2>&1; then
+    if ! diff -q "${GENERATED_HW}" "${HW_DEST}" &>/dev/null; then
         info "Copying generated hardware-configuration.nix into hosts/default/"
         cp -v "${GENERATED_HW}" "${HW_DEST}"
     fi
