@@ -78,7 +78,7 @@ cp /mnt/etc/nixos/hardware-configuration.nix hosts/default/hardware-configuratio
 
 ```bash
 # Clone this repo into /mnt/etc/nixos
-git clone https://github.com/Satcomx00-x00/nixos-configuration /mnt/etc/nixos
+git clone <your-repo-url> /mnt/etc/nixos
 cd /mnt/etc/nixos
 nixos-install --flake .#default
 ```
