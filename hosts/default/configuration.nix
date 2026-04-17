@@ -6,6 +6,7 @@
     ../../modules/nvidia.nix
     ../../modules/gaming.nix
     ../../modules/dev.nix
+    ../../modules/hyprland.nix
   ];
 
   # ---------- Boot ----------
@@ -24,12 +25,17 @@
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
+    # Use the upstream flake package instead of the nixpkgs snapshot so we
+    # get the version that matches the wiki docs (recommended by upstream).
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
 
-  # XDG portal for screen sharing, file pickers, etc.
+  # XDG portal — the hyprland portal is wired up via portalPackage above;
+  # xdg-desktop-portal-gtk is added for GTK file pickers and colour choosers.
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
   # ---------- Audio (PipeWire) ----------
@@ -61,7 +67,6 @@
     # Wayland essentials
     kitty
     waybar
-    wofi
     dunst
     libnotify
     swww
@@ -81,7 +86,6 @@
     pavucontrol
     brightnessctl
     playerctl
-    polkit_gnome
   ];
 
   # ---------- Fonts ----------

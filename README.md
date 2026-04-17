@@ -4,10 +4,15 @@ Full NixOS system configuration with **Hyprland** (Wayland compositor), **NVIDIA
 
 ## Features
 
-- **Hyprland** — tiling Wayland compositor with smooth animations
-- **NVIDIA** — proprietary driver with Wayland environment variables
+- **Hyprland** — tiling Wayland compositor (upstream flake, latest version)
+- **NVIDIA** — proprietary driver with full Wayland env vars and VA-API support
+- **hyprlock** — GPU-accelerated screen locker with blurred screenshot background
+- **hypridle** — idle management (dim → lock → DPMS off → suspend)
 - **Waybar** — minimal status bar with workspaces, clock, system monitors
-- **Wofi** — application launcher
+- **Rofi (Wayland)** — application launcher and clipboard picker
+- **cliphist** — clipboard history manager (text + images)
+- **wlogout** — session / logout menu
+- **hyprpicker** — Wayland-native colour picker
 - **Kitty** — GPU-accelerated terminal
 - **PipeWire** — audio (replaces PulseAudio)
 - **greetd + tuigreet** — lightweight TUI login manager
@@ -19,7 +24,7 @@ Full NixOS system configuration with **Hyprland** (Wayland compositor), **NVIDIA
 
 ```
 .
-├── flake.nix                          # Flake entry point
+├── flake.nix                          # Flake entry point (includes hyprland input)
 ├── hosts/
 │   └── default/
 │       ├── configuration.nix          # Main system configuration
@@ -28,11 +33,14 @@ Full NixOS system configuration with **Hyprland** (Wayland compositor), **NVIDIA
 │   └── default/
 │       ├── home.nix                   # Home Manager user config
 │       ├── hyprland.conf              # Hyprland window manager config
+│       ├── hyprlock.conf              # hyprlock screen locker config
+│       ├── hypridle.conf              # hypridle idle daemon config
 │       └── waybar/
 │           ├── config.jsonc           # Waybar modules and layout
 │           └── style.css              # Waybar theme
 └── modules/
-    ├── nvidia.nix                     # NVIDIA driver module
+    ├── nvidia.nix                     # NVIDIA driver module (VA-API, env vars)
+    ├── hyprland.nix                   # Hyprland ecosystem tools and polkit agent
     ├── gaming.nix                     # Steam, Discord, gaming tools
     └── dev.nix                        # Developer tools and packages
 ```
@@ -136,25 +144,39 @@ sudo nixos-rebuild switch --flake .#default
 | Key | Action |
 |-----|--------|
 | `Super + Return` | Open terminal (Kitty) |
-| `Super + Space` | App launcher (Wofi) |
+| `Super + Space` | App launcher (Rofi) |
 | `Super + Q` | Close window |
 | `Super + F` | Fullscreen |
 | `Super + V` | Toggle floating |
+| `Super + T` | Toggle split |
+| `Super + Y` | Pseudo-tile |
 | `Super + B` | Open Firefox |
 | `Super + E` | File manager (Nautilus) |
-| `Super + 1-9` | Switch workspace |
-| `Super + Shift + 1-9` | Move window to workspace |
+| `Super + L` | Lock screen (hyprlock) |
+| `Super + C` | Clipboard history picker |
+| `Super + P` | Colour picker (hyprpicker) |
+| `Super + S` | Toggle scratchpad workspace |
+| `Super + Shift + S` | Move window to scratchpad |
+| `Super + Shift + M` | Logout menu (wlogout) |
+| `Super + 1-9,0` | Switch workspace |
+| `Super + Shift + 1-9,0` | Move window to workspace |
+| `Super + Alt + Arrows` | Resize window (keyboard) |
 | `Super + Mouse drag` | Move / resize window |
-| `Print` | Screenshot (region) |
-| `Shift + Print` | Screenshot (full screen) |
+| `Super + H/J/K/L` | Move focus (vim keys) |
+| `Print` | Screenshot (region → clipboard) |
+| `Shift + Print` | Screenshot (full screen → clipboard) |
 | `Super + M` | Exit Hyprland |
 
 ## NVIDIA Notes
 
-- The config uses the **proprietary** NVIDIA driver with Wayland workarounds
-- If you experience cursor glitches, `WLR_NO_HARDWARE_CURSORS=1` is already set
+- The config uses the **proprietary** NVIDIA driver with all Wayland workarounds
+- Hardware cursors are disabled via `cursor { no_hardware_cursors = true }` in `hyprland.conf`
+- `WLR_NO_HARDWARE_CURSORS=1` is also set as a session variable for belt-and-braces safety
+- `nvidia-vaapi-driver` is installed for hardware video decode/encode (VA-API)
+- `NVD_BACKEND=direct` uses the stable direct VA-API backend
 - For newer GPUs (Ampere+), you can try `hardware.nvidia.open = true` in `modules/nvidia.nix`
-- Check [Hyprland NVIDIA wiki](https://wiki.hyprland.org/Nvidia/) for the latest tips
+- `GBM_BACKEND=nvidia-drm` is set but can be removed if a specific app crashes
+- See the [Hyprland NVIDIA wiki](https://wiki.hypr.land/Nvidia/) for the latest tips
 
 ## License
 
